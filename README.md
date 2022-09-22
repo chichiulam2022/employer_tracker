@@ -34,3 +34,6 @@ This project is licensed under the MIT licence.
 
 ## Contributors
 ​Contributors: <b>Chi Chiu Lam</b>
+
+## Questions
+If you have any questions about the repo, feel free to find me on my GitHub account <b><i>chichiulam2022</b></i> or email me at lamcc90@gmail.com.
