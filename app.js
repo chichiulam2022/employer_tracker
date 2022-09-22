@@ -51,6 +51,12 @@ const employeeSearchPrompt = () => {
         case "Add a role":
           addRole();
           break;
+        case "Add an employee":
+          addNewEmployee();
+          break;
+        case "Update an employee role":
+          updateRole();
+          break;
         case "Delete a role":
           deleteRole();
           break;
@@ -151,7 +157,7 @@ addRole = () => {
     });
 
     //set questions
-    let allQuestions = [
+    const allQuestions = [
       {
         type: "input",
         name: "title",
@@ -194,16 +200,68 @@ addRole = () => {
   });
 };
 
+// all a new employee
+addNewEmployee = () => {
+  const showAllRoles = [];
+  connection.query(`SELECT * FROM role`, (err, res) => {
+    if (err) throw err;
+    res.forEach((role) => {
+      let queryObj = {
+        name: role.title,
+        value: role.id,
+      };
+      showAllRoles.push(queryObj);
+    });
+  });
+
+  const allQuestions = [
+    {
+      type: "input",
+      name: "first_name",
+      message: "Enter the new employee's first name",
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Enter the new employee's last name",
+    },
+    {
+      tpye: "list",
+      name: "role_id",
+      choices: showAllRoles,
+    },
+  ];
+
+  inquirer
+    .prompt(allQuestions)
+    .then((prompt) => {
+      const query = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+      const values = [prompt.first_name, prompt.last_name, prompt.role_id];
+      connection.query(query, values, (err, res) => {
+        if (err) throw err;
+        console.log(`
+        ________________________________
+
+        ${prompt.first_name} ${prompt.last_name} Successfully Added
+        ________________________________\n`);
+        employeeSearchPrompt();
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 //delete roles
 deleteRole = () => {
   connection.query(`SELECT * FROM ROLE`, (err, res) => {
     if (err) throw err;
 
     const showAllroles = [];
-    res.forEach(({ title, id }) => {
+    res.forEach((role) => {
       const queryObj = {
-        name: title,
-        value: id,
+        name: role.title,
+        value: role.id,
       };
       showAllroles.push(queryObj);
     });
@@ -233,12 +291,72 @@ deleteRole = () => {
         });
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
       });
   });
 };
 
-//view budgets
+//update employee role
+updateRole = () => {
+  //show all employee names
+  const employeeSql = `SELECT * FROM employee`;
+  const employeeChoice = [];
+  connection.query(employeeSql, (err, res) => {
+    if (err) throw err;
+    res.forEach((employee) => {
+      const queryObj = {
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      };
+      employeeChoice.push(queryObj);
+    });
+
+    const roleSql = `SELECT * FROM role`;
+    const roleChoice = [];
+    connection.query(roleSql, (err, res) => {
+      if (err) throw err;
+      res.forEach((role) => {
+        const roleQueryObj = {
+          name: role.tile,
+          value: role.id,
+        };
+        roleChoice.push(roleQueryObj);
+      });
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "name",
+            message: "Which employee would you like to update?",
+            choices: employeeChoice,
+          },
+          {
+            type: "list",
+            name: "role_id",
+            message: "Choose the following new role",
+            choices: roleChoice,
+          },
+        ])
+        .then((prompt) => {
+          const updateSql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+          const sqlValues = [{ role_id: prompt.role_id }, prompt.id];
+          connection.query(updateSql, sqlValues, (err, res) => {
+            if (err) throw err;
+            console.log(`
+          ________________________________
+
+          Role ID ${prompt.role_id} Successfully Updated
+          ________________________________\n`);
+
+            employeeSearchPrompt();
+          });
+        });
+    });
+  });
+};
+
+//view budget
 viewBudgets = () => {
   console.log("Department budget shown as follows:\n");
   const mySQLquery = `SELECT sum(role.salary) AS 'Sum of Department Budget (in $)'
@@ -250,4 +368,4 @@ viewBudgets = () => {
     console.table(res);
     employeeSearchPrompt();
   });
-};
+}
