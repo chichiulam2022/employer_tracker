@@ -149,7 +149,7 @@ addRole = () => {
     if (err) throw err;
 
     res.forEach((dept) => {
-      let queryObj = {
+      const queryObj = {
         name: dept.name,
         value: dept.id,
       };
@@ -157,7 +157,8 @@ addRole = () => {
     });
 
     //set questions
-    const allQuestions = [
+    
+   allQuestions = [
       {
         type: "input",
         name: "title",
