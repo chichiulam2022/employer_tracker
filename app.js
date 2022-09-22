@@ -207,7 +207,7 @@ addNewEmployee = () => {
   connection.query(`SELECT * FROM role`, (err, res) => {
     if (err) throw err;
     res.forEach((role) => {
-      let queryObj = {
+      const queryObj = {
         name: role.title,
         value: role.id,
       };
