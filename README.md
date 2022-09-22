@@ -19,7 +19,7 @@ The following necessary dependencies must be installed properly:
 * <b>inquirer</b>
 
 ## Usage
-In order to use this app, users should run the app using Node.js, install [MySQL](https://www.mysql.com/) as well as [mysql npm](https://www.npmjs.com/package/mysql2)
+In order to use this app, users should run the app using Node.js, install [MySQL](https://www.mysql.com/) as well as [mysql2 npm](https://www.npmjs.com/package/mysql2)
 
 ### Demo
 ![Untitled_ Sep 22, 2022 1_04 AM](https://user-images.githubusercontent.com/108379616/191662854-ac2742f0-6c3f-4f93-8727-9d4bae416bb9.gif)
