@@ -158,7 +158,7 @@ addRole = () => {
 
     //set questions
     
-   allQuestions = [
+   const = questions = [
       {
         type: "input",
         name: "title",
@@ -178,7 +178,7 @@ addRole = () => {
     ];
 
     inquirer
-      .prompt(allQuestions)
+      .prompt(questions)
       .then((prompt) => {
         const query = `INSERT INTO ROLE (title, salary, dept_id) VALUES (?, ?, ?)`;
         connection.query(
@@ -215,7 +215,7 @@ addNewEmployee = () => {
     });
   });
 
-  const allQuestions = [
+  const questions = [
     {
       type: "input",
       name: "first_name",
@@ -234,7 +234,7 @@ addNewEmployee = () => {
   ];
 
   inquirer
-    .prompt(allQuestions)
+    .prompt(questions)
     .then((prompt) => {
       const query = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
       const values = [prompt.first_name, prompt.last_name, prompt.role_id];
@@ -267,7 +267,7 @@ deleteRole = () => {
       showAllroles.push(queryObj);
     });
 
-    let questions = [
+    const questions = [
       {
         type: "list",
         name: "id",
