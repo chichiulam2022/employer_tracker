@@ -11,7 +11,7 @@ welcomeSpeech = () => {
 };
 
 const employeeSearchPrompt = () => {
-  const allQuestions = [
+  let questions = [
     {
       type: "rawlist",
       name: "choices",
@@ -33,7 +33,7 @@ const employeeSearchPrompt = () => {
     },
   ];
   inquirer
-    .prompt(allQuestions)
+    .prompt(questions)
     .then((res) => {
       switch (res.choices) {
         case "View all departments":
@@ -120,7 +120,7 @@ viewAllEmployees = () => {
 
 //add a new department
 addDept = () => {
-  const question = [
+  let question = [
     {
       type: "input",
       name: "name",
@@ -149,7 +149,7 @@ addRole = () => {
     if (err) throw err;
 
     res.forEach((dept) => {
-      const queryObj = {
+      let queryObj = {
         name: dept.name,
         value: dept.id,
       };
@@ -157,8 +157,7 @@ addRole = () => {
     });
 
     //set questions
-    
-   const = questions = [
+    const allQuestions = [
       {
         type: "input",
         name: "title",
@@ -178,7 +177,7 @@ addRole = () => {
     ];
 
     inquirer
-      .prompt(questions)
+      .prompt(allQuestions)
       .then((prompt) => {
         const query = `INSERT INTO ROLE (title, salary, dept_id) VALUES (?, ?, ?)`;
         connection.query(
@@ -207,7 +206,7 @@ addNewEmployee = () => {
   connection.query(`SELECT * FROM role`, (err, res) => {
     if (err) throw err;
     res.forEach((role) => {
-      const queryObj = {
+      let queryObj = {
         name: role.title,
         value: role.id,
       };
@@ -215,7 +214,7 @@ addNewEmployee = () => {
     });
   });
 
-  const questions = [
+  let questions = [
     {
       type: "input",
       name: "first_name",
@@ -267,7 +266,7 @@ deleteRole = () => {
       showAllroles.push(queryObj);
     });
 
-    const questions = [
+    let questions = [
       {
         type: "list",
         name: "id",
@@ -297,7 +296,6 @@ deleteRole = () => {
   });
 };
 
-//update employee role
 updateRole = () => {
   //show all employee names
   const employeeSql = `SELECT * FROM employee`;
@@ -324,35 +322,35 @@ updateRole = () => {
         roleChoice.push(roleQueryObj);
       });
 
-      inquirer
-        .prompt([
-          {
-            type: "list",
-            name: "name",
-            message: "Which employee would you like to update?",
-            choices: employeeChoice,
-          },
-          {
-            type: "list",
-            name: "role_id",
-            message: "Choose the following new role",
-            choices: roleChoice,
-          },
-        ])
-        .then((prompt) => {
-          const updateSql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-          const sqlValues = [{ role_id: prompt.role_id }, prompt.id];
-          connection.query(updateSql, sqlValues, (err, res) => {
-            if (err) throw err;
-            console.log(`
+      let questions = [
+        {
+          type: "list",
+          name: "name",
+          message: "Which employee would you like to update?",
+          choices: employeeChoice,
+        },
+        {
+          type: "list",
+          name: "role_id",
+          message: "Choose the following new role",
+          choices: roleChoice,
+        },
+      ];
+
+      inquirer.prompt(questions).then((prompt) => {
+        const updateSql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+        const sqlValues = [{ role_id: prompt.role_id }, prompt.id];
+        connection.query(updateSql, sqlValues, (err, res) => {
+          if (err) throw err;
+          console.log(`
           ________________________________
 
           Role ID ${prompt.role_id} Successfully Updated
           ________________________________\n`);
 
-            employeeSearchPrompt();
-          });
+          employeeSearchPrompt();
         });
+      });
     });
   });
 };
@@ -369,4 +367,4 @@ viewBudgets = () => {
     console.table(res);
     employeeSearchPrompt();
   });
-}
+};
